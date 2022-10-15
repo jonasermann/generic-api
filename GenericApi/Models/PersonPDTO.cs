@@ -1,6 +1,6 @@
 ﻿namespace GenericApi.Models;
 
-public class PersonCreateDTO
+public class PersonPDTO
 {
     public string? Name { get; set; }
 

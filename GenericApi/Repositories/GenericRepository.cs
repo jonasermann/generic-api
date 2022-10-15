@@ -34,20 +34,20 @@ public class GenericRepository : IGenericRepository
         return dto;
     }
 
-    public static T CreateModel<T, CreateDTO>(CreateDTO createDTO)
+    public static T CreateModel<T, PDTO>(PDTO pdto)
     {
         var model = Activator.CreateInstance<T>();
 
         var modelProperties = model.GetType().GetProperties();
-        var createDTOProperties = createDTO.GetType().GetProperties();
+        var PDTOProperties = pdto.GetType().GetProperties();
 
-        foreach (var createDTOProperty in createDTOProperties)
+        foreach (var PDTOProperty in PDTOProperties)
         {
             foreach (var modelProperty in modelProperties)
             {
-                if (createDTOProperty.Name == modelProperty.Name)
+                if (PDTOProperty.Name == modelProperty.Name)
                 {
-                    modelProperty.SetValue(model, createDTOProperty.GetValue(createDTO));
+                    modelProperty.SetValue(model, PDTOProperty.GetValue(pdto));
                 }
             }
         }
@@ -61,10 +61,10 @@ public class GenericRepository : IGenericRepository
         return await dbSet.Select(m => ConvertToDTO<T, DTO>(m)).ToListAsync();
     }
 
-    public async Task Add<T, CreateDTO>(CreateDTO createDTO) where T : class where CreateDTO : class
+    public async Task Add<T, PDTO>(PDTO pdto) where T : class where PDTO : class
     {
         var dbSet = _context.Set<T>();
-        var model = CreateModel<T, CreateDTO>(createDTO);
+        var model = CreateModel<T, PDTO>(pdto);
         dbSet.Add(model);
         await _context.SaveChangesAsync();
     }

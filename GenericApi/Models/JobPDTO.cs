@@ -1,6 +1,6 @@
 ﻿namespace GenericApi.Models;
 
-public class JobCreateDTO
+public class JobPDTO
 {
     public string? Title { get; set; }
 
