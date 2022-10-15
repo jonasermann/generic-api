@@ -68,4 +68,13 @@ public class GenericRepository : IGenericRepository
         dbSet.Add(model);
         await _context.SaveChangesAsync();
     }
+
+    public async Task Put<T, PDTO>(int id, PDTO pdto) where T : class where PDTO : class
+    {
+        var dbSet = _context.Set<T>();
+        var model = PModel<T, PDTO>(pdto);
+        model.GetType().GetProperty("Id").SetValue(model, id);
+        dbSet.Update(model);
+        await _context.SaveChangesAsync();
+    }
 }
