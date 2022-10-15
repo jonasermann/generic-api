@@ -34,10 +34,48 @@ public class GenericRepository : IGenericRepository
         return dto;
     }
 
+    public static T CreateModel<T, CreateDTO>(int id, CreateDTO createDTO)
+    {
+        var model = Activator.CreateInstance<T>();
+
+        var modelProperties = model.GetType().GetProperties();
+        var createDTOProperties = createDTO.GetType().GetProperties();
+
+        foreach (var createDTOProperty in createDTOProperties)
+        {
+            foreach (var modelProperty in modelProperties)
+            {
+                if (createDTOProperty.Name == modelProperty.Name)
+                {
+                    modelProperty.SetValue(model, createDTOProperty.GetValue(createDTO));
+                }
+            }
+        }
+
+        //foreach(var modelProperty in modelProperties)
+        //{
+        //    if (modelProperty.Name == "Id")
+        //    {
+        //        modelProperty.SetValue(model,  id);
+        //    }
+        //}
+
+        return model;
+    }
+
     public async Task<List<DTO>> Get<T, DTO>() where T : class where DTO : class
     {
         var dbSet = _context.Set<T>();
         return await dbSet.Select(m => ConvertToDTO<T, DTO>(m)).ToListAsync();
     }
 
+    public async Task Add<T, CreateDTO>(CreateDTO createDTO) where T : class where CreateDTO : class
+    {
+        var dbSet = _context.Set<T>();
+        var models = await dbSet.ToListAsync();
+        var maxId = (int) models.Max(m => m.GetType().GetProperties().FirstOrDefault(p => p.Name == "Id").GetValue(m));
+        var model = CreateModel<T, CreateDTO>(maxId + 1, createDTO);
+        dbSet.Add(model);
+        await _context.SaveChangesAsync();
+    }
 }

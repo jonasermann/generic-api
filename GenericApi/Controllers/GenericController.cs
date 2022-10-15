@@ -18,4 +18,10 @@ public class GenericController : ControllerBase
 
     [HttpGet("Jobs")]
     public async Task<List<JobDTO>> GetJobs() => await _repo.Get<Job, JobDTO>();
+
+    [HttpPost("Persons")]
+    public async Task AddPerson(PersonCreateDTO personCreateDTO) => await _repo.Add<Person, PersonCreateDTO>(personCreateDTO);
+
+    [HttpPost("Jobs")]
+    public async Task AddJob(JobCreateDTO jobCreateDTO) => await _repo.Add<Job, JobCreateDTO>(jobCreateDTO);
 }
