@@ -9,4 +9,6 @@ public interface IGenericRepository
     Task Add<T, PDTO>(PDTO pdto) where T : class where PDTO : class;
 
     Task Put<T, PDTO>(int id, PDTO pdto) where T : class where PDTO : class;
+
+    Task Delete<T>(int id) where T : class;
 }

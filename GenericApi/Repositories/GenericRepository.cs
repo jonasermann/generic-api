@@ -77,4 +77,13 @@ public class GenericRepository : IGenericRepository
         dbSet.Update(model);
         await _context.SaveChangesAsync();
     }
+
+    public async Task Delete<T>(int id) where T : class
+    {
+        var dbSet = _context.Set<T>();
+        var models = await dbSet.ToListAsync();
+        var model = models.FirstOrDefault(m => (int) m.GetType().GetProperty("Id").GetValue(m) == id);
+        dbSet.Remove(model);
+        await _context.SaveChangesAsync();
+    }
 }
