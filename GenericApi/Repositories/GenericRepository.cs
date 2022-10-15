@@ -34,7 +34,7 @@ public class GenericRepository : IGenericRepository
         return dto;
     }
 
-    public static T CreateModel<T, CreateDTO>(int id, CreateDTO createDTO)
+    public static T CreateModel<T, CreateDTO>(CreateDTO createDTO)
     {
         var model = Activator.CreateInstance<T>();
 
@@ -52,14 +52,6 @@ public class GenericRepository : IGenericRepository
             }
         }
 
-        //foreach(var modelProperty in modelProperties)
-        //{
-        //    if (modelProperty.Name == "Id")
-        //    {
-        //        modelProperty.SetValue(model,  id);
-        //    }
-        //}
-
         return model;
     }
 
@@ -73,8 +65,7 @@ public class GenericRepository : IGenericRepository
     {
         var dbSet = _context.Set<T>();
         var models = await dbSet.ToListAsync();
-        var maxId = (int) models.Max(m => m.GetType().GetProperties().FirstOrDefault(p => p.Name == "Id").GetValue(m));
-        var model = CreateModel<T, CreateDTO>(maxId + 1, createDTO);
+        var model = CreateModel<T, CreateDTO>(createDTO);
         dbSet.Add(model);
         await _context.SaveChangesAsync();
     }
