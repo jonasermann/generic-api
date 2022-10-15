@@ -34,7 +34,7 @@ public class GenericRepository : IGenericRepository
         return dto;
     }
 
-    public static T CreateModel<T, PDTO>(PDTO pdto)
+    public static T PModel<T, PDTO>(PDTO pdto)
     {
         var model = Activator.CreateInstance<T>();
 
@@ -64,7 +64,7 @@ public class GenericRepository : IGenericRepository
     public async Task Add<T, PDTO>(PDTO pdto) where T : class where PDTO : class
     {
         var dbSet = _context.Set<T>();
-        var model = CreateModel<T, PDTO>(pdto);
+        var model = PModel<T, PDTO>(pdto);
         dbSet.Add(model);
         await _context.SaveChangesAsync();
     }
