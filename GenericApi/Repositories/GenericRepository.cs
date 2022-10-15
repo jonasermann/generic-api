@@ -64,7 +64,6 @@ public class GenericRepository : IGenericRepository
     public async Task Add<T, CreateDTO>(CreateDTO createDTO) where T : class where CreateDTO : class
     {
         var dbSet = _context.Set<T>();
-        var models = await dbSet.ToListAsync();
         var model = CreateModel<T, CreateDTO>(createDTO);
         dbSet.Add(model);
         await _context.SaveChangesAsync();
